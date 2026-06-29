@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ── PRIMARY SEO ── -->
+  <title>Billionaire Signal — Elite Market Intelligence & Investment Signals</title>
+  <meta name="description" content="Billionaire Signal delivers exclusive market signals, weekly recaps, and investment intelligence for serious investors. Join the waitlist for early access." />
+  <meta name="keywords" content="billionaire signal, market signals, investment intelligence, stock signals, elite investing, market recap, financial signals" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://billionsignal.com/" />
+
+  <!-- ── OPEN GRAPH ── -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://billionsignal.com/" />
+  <meta property="og:title" content="Billionaire Signal — Elite Market Intelligence" />
+  <meta property="og:description" content="Exclusive market signals, weekly recaps, and investment intelligence for serious investors. Join the waitlist." />
+  <meta property="og:image" content="https://billionsignal.com/logo.png" />
+  <meta property="og:site_name" content="Billionaire Signal" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- ── TWITTER CARD ── -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@Bil_Signal" />
+  <meta name="twitter:creator" content="@Bil_Signal" />
+  <meta name="twitter:title" content="Billionaire Signal — Elite Market Intelligence" />
+  <meta name="twitter:description" content="Exclusive market signals and weekly recaps for serious investors." />
+  <meta name="twitter:image" content="https://billionsignal.com/logo.png" />
+
+  <!-- ── SCHEMA.ORG ── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://billionairesignal.com/#organization",
+        "name": "Billionaire Signal",
+        "url": "https://billionairesignal.com",
+        "sameAs": [
+          "https://www.instagram.com/billionsignal/",
+          "https://www.youtube.com/@BillionaireSignal",
+          "https://www.tiktok.com/@billionsignal",
+          "https://x.com/Bil_Signal",
+          "https://www.linkedin.com/company/billionaire-signal/",
+          "https://discord.gg/edbsDVYaWF",
+          "https://t.me/Billionare_signal"
+        ],
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://billionsignal.com/logo.png"
+        },
+        "description": "Billionaire Signal delivers exclusive market signals, weekly market recaps, and elite investment intelligence for serious investors."
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://billionsignal.com/#website",
+        "url": "https://billionsignal.com/",
+        "name": "Billionaire Signal",
+        "publisher": { "@id": "https://billionairesignal.com/#organization" }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://billionsignal.com/#webpage",
+        "url": "https://billionsignal.com/",
+        "name": "Billionaire Signal — Elite Market Intelligence",
+        "description": "Exclusive market signals, weekly recaps, and investment intelligence for serious investors.",
+        "isPartOf": { "@id": "https://billionsignal.com/#website" },
+        "about": { "@id": "https://billionairesignal.com/#organization" }
+      }
+    ]
+  }
+  </script>
+
+  <!-- ── FONTS ── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:      #c9a84c;
+      --gold-lt:   #e8c97a;
+      --gold-dim:  #8a6f35;
+      --black:     #050505;
+      --dark:      #0d0d0d;
+      --dark-2:    #111111;
+      --dark-3:    #161616;
+      --text:      #e8e0d0;
+      --muted:     #6a6055;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── subtle grain texture ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ── all content above grain ── */
+    header, main, footer { position: relative; z-index: 1; }
+
+    /* ── HEADER ── */
+    header {
+      width: 100%;
+      max-width: 600px;
+      padding: 52px 24px 0;
+      text-align: center;
+    }
+
+    .logo-wrap {
+      margin: 0 auto 28px;
+      width: 148px;
+      height: 148px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      /* makes the white logo bg disappear on dark pages */
+      mix-blend-mode: luminosity;
+      filter: brightness(1.1) contrast(1.05);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 5.5vw, 46px);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.12;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+
+    h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-lt) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      line-height: 1.75;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    /* ── ORNAMENT ── */
+    .ornament {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      max-width: 320px;
+      margin: 38px auto;
+      padding: 0 24px;
+    }
+    .ornament-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-dim) 80%);
+    }
+    .ornament-line:last-child {
+      background: linear-gradient(to left, transparent, var(--gold-dim) 80%);
+    }
+    .ornament-diamond {
+      width: 6px; height: 6px;
+      background: var(--gold-dim);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      width: 100%;
+      max-width: 540px;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* ── LINK CARDS ── */
+    .card-group { display: flex; flex-direction: column; gap: 10px; }
+
+    .section-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      padding: 28px 0 10px;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--dark-2);
+      border: 1px solid #1c1c1c;
+      border-radius: 3px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.18s, background 0.18s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .link-card::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--gold-lt), var(--gold));
+      opacity: 0;
+      transition: opacity 0.18s;
+    }
+
+    .link-card:hover { background: #131109; border-color: #3a2e14; }
+    .link-card:hover::after { opacity: 1; }
+
+    /* featured card */
+    .link-card.featured {
+      background: linear-gradient(135deg, #1a1508 0%, #0e0e0e 100%);
+      border-color: #3a2e14;
+    }
+    .link-card.featured::after { opacity: 1; }
+
+    .card-icon {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 1px solid #222;
+      background: #181818;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      color: var(--gold);
+      transition: border-color 0.18s, background 0.18s;
+    }
+    .link-card.featured .card-icon { border-color: var(--gold-dim); background: rgba(201,168,76,0.08); }
+    .link-card:hover .card-icon { border-color: var(--gold-dim); }
+    .card-icon svg { width: 18px; height: 18px; }
+
+    .card-text { flex: 1; min-width: 0; }
+    .card-title {
+      font-size: 14px; font-weight: 500;
+      color: #fff;
+      margin-bottom: 2px;
+      letter-spacing: 0.015em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-sub {
+      font-size: 11px; color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    .card-arrow {
+      color: var(--gold-dim);
+      font-size: 20px;
+      line-height: 1;
+      transition: transform 0.18s, color 0.18s;
+      flex-shrink: 0;
+    }
+    .link-card:hover .card-arrow { transform: translateX(4px); color: var(--gold-lt); }
+
+    /* ── BADGE ── */
+    .badge {
+      font-size: 9px; font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold-dim);
+      border-radius: 2px;
+      padding: 2px 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-left: auto;
+      margin-right: 8px;
+    }
+
+    /* ── SOCIALS ── */
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 11px 10px;
+      background: var(--dark-2);
+      border: 1px solid #1c1c1c;
+      border-radius: 3px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      transition: border-color 0.18s, color 0.18s, background 0.18s;
+    }
+
+    .social-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+    .social-btn:hover { border-color: var(--gold-dim); color: var(--gold-lt); background: #131109; }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 56px;
+      padding: 20px 24px 32px;
+      text-align: center;
+      font-size: 10px;
+      color: #2e2e2e;
+      letter-spacing: 0.06em;
+    }
+    footer a { color: #363636; text-decoration: none; transition: color 0.15s; }
+    footer a:hover { color: var(--gold-dim); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 420px) {
+      .social-grid { grid-template-columns: repeat(2, 1fr); }
+      .badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <img src="logo.png" alt="Billionaire Signal — Bull with market chart logo" width="148" height="148" />
+  </div>
+
+  <h1>The Signal Every<br/><em>Elite Investor</em> Needs</h1>
+  <p class="tagline">Exclusive market intelligence, weekly recaps, and high-conviction signals — reserved for those who move first.</p>
+</header>
+
+<div class="ornament">
+  <div class="ornament-line"></div>
+  <div class="ornament-diamond"></div>
+  <div class="ornament-line"></div>
+</div>
+
+<main>
+
+  <!-- PRIMARY CTAs -->
+  <div class="card-group">
+
+    <a href="https://billionairesignal.com/waitlist" class="link-card featured" target="_blank" rel="noopener noreferrer">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="card-text">
+        <div class="card-title">Join the Waitlist</div>
+        <div class="card-sub">Secure your early access spot</div>
+      </div>
+      <span class="badge">Limited</span>
+      <div class="card-arrow">›</div>
+    </a>
+
+    <a href="https://billionairesignal.com/market-recap" class="link-card" target="_blank" rel="noopener noreferrer">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <div class="card-text">
+        <div class="card-title">Weekly Market Recap</div>
+        <div class="card-sub">What moved markets this week</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </a>
+
+    <a href="https://billionairesignal.com/blog" class="link-card" target="_blank" rel="noopener noreferrer">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </div>
+      <div class="card-text">
+        <div class="card-title">Read the Blog</div>
+        <div class="card-sub">Wealth strategies &amp; deep dives</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </a>
+
+  </div>
+
+  <!-- SOCIALS -->
+  <div class="section-label">Follow &amp; Connect</div>
+  <div class="social-grid">
+
+    <a href="https://www.instagram.com/billionsignal/" class="social-btn" target="_blank" rel="noopener noreferrer" aria-label="Billionaire Signal on Instagram">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5"/>
+        <circle cx="12" cy="12" r="4"/>
+        <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
+      </svg>
+      Instagram
+    </a>
+
+    <a href="https://www.youtube.com/@BillionaireSignal" class="social-btn" target="_blank" rel="noopener noreferrer" aria-label="Billionaire Signal on YouTube">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+        <path d="M22.54 6.42A2.78 2.78 0 0 0 20.59 4.46C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+        <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#050505"/>
+      </svg>
+      YouTube
+    </a>
+
+    <a href="https://www.tiktok.com/@billionsignal" class="social-btn" target="_blank" rel="noopener noreferrer" aria-label="Billionaire Signal on TikTok">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+      </svg>
+      TikTok
+    </a>
+
+    <a href="https://x.com/Bil_Signal" class="social-btn" target="_blank" rel="noopener noreferrer" aria-label="Billionaire Signal on X">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+      X (Twitter)
+    </a>
+
+    <a href="https://www.linkedin.com/company/billionaire-signal/" class="social-btn" target="_blank" rel="noopener noreferrer" aria-label="Billionaire Signal on LinkedIn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+        <rect x="2" y="9" width="4" height="12"/>
+        <circle cx="4" cy="4" r="2"/>
+      </svg>
+      LinkedIn
+    </a>
+
+    <a href="https://discord.gg/edbsDVYaWF" class="social-btn" target="_blank" rel="noopener noreferrer" aria-label="Billionaire Signal on Discord">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+      </svg>
+      Discord
+    </a>
+
+    <a href="https://t.me/Billionare_signal" class="social-btn" target="_blank" rel="noopener noreferrer" aria-label="Billionaire Signal on Telegram">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+        <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+      </svg>
+      Telegram
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  <p>&copy; 2026 Billionaire Signal &nbsp;&middot;&nbsp; <a href="https://billionairesignal.com" rel="noopener noreferrer">billionairesignal.com</a></p>
+</footer>
+
+</body>
+</html>
