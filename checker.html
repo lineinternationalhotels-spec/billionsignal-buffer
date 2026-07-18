@@ -881,7 +881,25 @@ function showNewMember() {
   document.getElementById('gate-new').style.display = 'block';
 }
 
-// Path A: self-reported existing member — no verification possible client-side, unlock on trust
+// TEMP interim capture — a Google Form acting as our own list until the dev-brief.md
+// API (GET /api/waitlist-check, POST /api/waitlist-subscribe) is live. Every unlock,
+// on either path, gets logged here so the team can manually reconcile against the real
+// waitlist in the meantime. Remove this once real verification is wired in above.
+const TEMP_LIST_FORM_ACTION = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSfve1DBIpB15v8fbEI3jrxTbxYqiSh7SIYjwRLLyB8TjMzhFg/formResponse';
+const TEMP_LIST_ENTRY_EMAIL = 'entry.1692850111';
+const TEMP_LIST_ENTRY_META = 'entry.615397963';
+
+function logToTempList(email, meta) {
+  try {
+    const fd = new FormData();
+    fd.append(TEMP_LIST_ENTRY_EMAIL, email);
+    fd.append(TEMP_LIST_ENTRY_META, meta);
+    fetch(TEMP_LIST_FORM_ACTION, { method: 'POST', mode: 'no-cors', body: fd });
+  } catch (e) { /* best-effort only */ }
+}
+
+// Path A: self-reported existing member — no verification possible client-side.
+// We log the email to our temp list and unlock on trust.
 function unlockAsExisting() {
   const input = document.getElementById('gate-email-existing');
   const email = input.value.trim();
@@ -890,6 +908,8 @@ function unlockAsExisting() {
     return;
   }
   input.style.borderColor = '';
+  const band = document.getElementById('band-label').textContent;
+  logToTempList(email, `already-member | score ${currentScore}/${TOTAL} | ${band}`);
   finishUnlock({
     title: 'Results unlocked.',
     body: 'Your full breakdown is below.'
@@ -935,7 +955,10 @@ async function unlockAfterJoin() {
     verified = null; // endpoint not live yet or blocked — fall back below
   }
 
+  const band = document.getElementById('band-label').textContent;
+
   if (verified === true) {
+    logToTempList(email, `new-member (api-verified) | score ${currentScore}/${TOTAL} | ${band}`);
     finishUnlock({
       title: "You're confirmed on the waitlist.",
       body: 'Your full breakdown is below. Check your email for the Signal Quality Checklist PDF.'
@@ -944,10 +967,12 @@ async function unlockAfterJoin() {
     statusEl.innerHTML = 'We couldn\'t find that email on the waitlist yet — sign-ups can take a minute to sync. <a href="#" onclick="unlockAfterJoin();return false;">Try again</a> or <a href="https://billionairesignal.com/waitlist" target="_blank" rel="noopener">join now</a>.';
     statusEl.style.color = 'var(--red)';
   } else {
-    // No live verification endpoint yet — honest self-reported fallback
+    // No live verification endpoint yet — we save the email to our temp list ourselves
+    // so the team can add them to the real waitlist by hand until the API ships.
+    logToTempList(email, `new-member (self-reported, needs manual add) | score ${currentScore}/${TOTAL} | ${band}`);
     finishUnlock({
-      title: 'Thanks for joining.',
-      body: "We can't auto-verify yet, so this unlocks on trust. Your full breakdown is below."
+      title: 'Thanks for joining!',
+      body: "We've saved your email — our team will personally add you to the main waitlist until this connects automatically. Your full breakdown is below."
     });
   }
 }

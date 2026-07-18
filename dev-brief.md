@@ -19,6 +19,21 @@ Since the buffer site is a static page with no backend, and the waitlist lives o
 
 ---
 
+## TEMPORARY: Interim Capture (already live, remove once Endpoint 1 ships)
+
+Until `GET /api/waitlist-check` exists, every unlock on the checker — both paths — also fires a silent, best-effort POST to a **Google Form we set up as a stopgap list**, so nobody who unlocks results gets lost while the real API is pending. This is separate from and does not touch the real waitlist.
+
+- Google Form: "Signal Checker Waitlist Capture (TEMP — delete after API ships)"
+- Linked Google Sheet: same name, owned by `line.international.hotels@gmail.com`
+- Columns: Timestamp / Email / Path+Score (e.g. `new-member (self-reported, needs manual add) | score 9/13 | Incomplete`)
+- Email notifications are on for this form, so the team gets pinged per new capture
+
+**Action needed from marketing (not dev) in the meantime:** periodically check this sheet and manually add anyone tagged `needs manual add` to the real waitlist, since the checker itself cannot add them there.
+
+**Action needed from dev:** once `GET /api/waitlist-check` (and ideally `POST /api/waitlist-subscribe`) is live, remove the `logToTempList()` calls and the `TEMP_LIST_*` constants near the top of the gate logic in `checker.html` — search for the comment block starting `// TEMP interim capture`. At that point the Google Sheet can be archived.
+
+---
+
 ## Endpoint 1 — Check waitlist membership (used on "I'm new here" return step)
 
 ```
