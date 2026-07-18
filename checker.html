@@ -317,7 +317,20 @@
     }
     .btn-unlock:hover { opacity: .88; }
     .gate-privacy { font-size: 10px; color: #2a2520; margin-top: 10px; }
-    .gate-privacy a { color: #3a3530; text-decoration: none; }
+    .gate-privacy a { color: #6a5a30; text-decoration: underline; }
+
+    /* gate choice buttons */
+    .gate-choice-row { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; }
+    .btn-gate-choice {
+      flex: 1; display: flex; flex-direction: column; gap: 4px;
+      background: #0d0d0d; border: 1px solid #2a2210; border-radius: 3px;
+      padding: 16px 14px; cursor: pointer;
+      transition: border-color .15s, background .15s;
+      text-align: left;
+    }
+    .btn-gate-choice:hover { border-color: var(--gold-dim); background: #131109; }
+    .choice-title { font-size: 12px; font-weight: 600; color: #d0c8b8; }
+    .choice-sub { font-size: 10.5px; color: var(--muted); }
 
     /* confirm state */
     .gate-confirm { display: none; text-align: center; padding: 8px 0; }
@@ -605,22 +618,52 @@
     <div class="gate-card" id="gate-card">
       <div class="gate-free-badge">100% Free · No Payment Required</div>
       <h2>Unlock Your <em>Full Breakdown</em></h2>
-      <p>Get the itemised score for all 13 criteria with plain-language explanations — plus the Signal Quality Checklist PDF to keep. Join our waitlist to unlock instantly.</p>
+      <p>The full itemised score for all 13 criteria — plus the Signal Quality Checklist PDF — is reserved for the Billionaire Signal waitlist. It's free to join.</p>
 
-      <div id="gate-form-wrap">
-        <div class="gate-form">
-          <input type="email" id="gate-email" class="gate-input" placeholder="Enter your email" />
-          <button type="button" class="btn-unlock" onclick="submitGate()">Unlock Free →</button>
+      <!-- Step 1: are they already on the waitlist? -->
+      <div id="gate-step-choice">
+        <div class="gate-choice-row">
+          <button type="button" class="btn-gate-choice" onclick="showAlreadyMember()">
+            <span class="choice-title">I'm already on the waitlist</span>
+            <span class="choice-sub">Enter your email to unlock</span>
+          </button>
+          <button type="button" class="btn-gate-choice" onclick="showNewMember()">
+            <span class="choice-title">I'm new here</span>
+            <span class="choice-sub">Join free, then unlock</span>
+          </button>
         </div>
-        <div class="gate-privacy">No spam. Just the breakdown + the checklist. Unsubscribe anytime.</div>
+      </div>
+
+      <!-- Path A: already a member — self-reported, immediate reveal -->
+      <div id="gate-already" style="display:none;">
+        <div class="gate-form">
+          <input type="email" id="gate-email-existing" class="gate-input" placeholder="Enter the email you signed up with" />
+          <button type="button" class="btn-unlock" onclick="unlockAsExisting()">Show My Results →</button>
+        </div>
+        <div class="gate-privacy">We can't yet auto-verify waitlist membership from this page — this unlocks your results on trust. <a href="#" onclick="backToChoice();return false;">← Back</a></div>
+      </div>
+
+      <!-- Path B: new — send to the real waitlist, then self-confirm on return -->
+      <div id="gate-new" style="display:none;">
+        <div class="gate-form">
+          <input type="email" id="gate-email-new" class="gate-input" placeholder="Enter your email" />
+          <button type="button" class="btn-unlock" onclick="openWaitlist()">Join the Waitlist →</button>
+        </div>
+        <div class="gate-privacy">Opens billionairesignal.com in a new tab. <a href="#" onclick="backToChoice();return false;">← Back</a></div>
+      </div>
+
+      <!-- Path B, step 2: waiting for them to come back -->
+      <div id="gate-waiting" style="display:none;">
+        <div class="gate-confirm-icon" style="color:var(--gold);">↗</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:var(--gold-lt);margin-bottom:8px;">Complete sign-up in the new tab</h3>
+        <p style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Once you've joined the waitlist on billionairesignal.com, come back here and click below to unlock your results.</p>
+        <button type="button" class="btn-unlock" onclick="unlockAfterJoin()">I've Joined — Unlock My Results →</button>
       </div>
 
       <div class="gate-confirm" id="gate-confirm">
         <div class="gate-confirm-icon">✓</div>
-        <h3>You're on the list.</h3>
-        <p>Your full breakdown is below. We've also added you to the Billionaire Signal early access list —<br/>
-        check your email for the Signal Quality Checklist PDF.<br/><br/>
-        <a href="https://billionairesignal.com/waitlist" target="_blank" rel="noopener">Visit billionairesignal.com →</a></p>
+        <h3 id="gate-confirm-title">Results unlocked.</h3>
+        <p id="gate-confirm-body">Your full breakdown is below.</p>
       </div>
     </div>
 
@@ -813,37 +856,75 @@ function runScorer(f) {
   results.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function submitGate() {
-  const email = document.getElementById('gate-email').value.trim();
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    document.getElementById('gate-email').style.borderColor = 'var(--red)';
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function hideAllGateSteps() {
+  ['gate-step-choice','gate-already','gate-new','gate-waiting'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+}
+
+function backToChoice() {
+  hideAllGateSteps();
+  document.getElementById('gate-step-choice').style.display = 'block';
+}
+
+function showAlreadyMember() {
+  hideAllGateSteps();
+  document.getElementById('gate-already').style.display = 'block';
+}
+
+function showNewMember() {
+  hideAllGateSteps();
+  document.getElementById('gate-new').style.display = 'block';
+}
+
+// Path A: self-reported existing member — no verification possible client-side, unlock on trust
+function unlockAsExisting() {
+  const input = document.getElementById('gate-email-existing');
+  const email = input.value.trim();
+  if (!email || !EMAIL_RE.test(email)) {
+    input.style.borderColor = 'var(--red)';
     return;
   }
-  document.getElementById('gate-email').style.borderColor = '';
-
-  // Try the API — falls back to opening waitlist page
-  // API_ENDPOINT: replace with live endpoint when devs ship it
-  const payload = {
-    email,
-    source: 'signal-checker',
-    score: currentScore,
-    score_total: TOTAL,
-    score_band: document.getElementById('band-label').textContent
-  };
-
-  fetch('https://billionairesignal.com/api/waitlist-subscribe', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  }).catch(() => {
-    // Fallback: open waitlist page with email pre-filled
-    window.open(`https://billionairesignal.com/waitlist?email=${encodeURIComponent(email)}`, '_blank');
+  input.style.borderColor = '';
+  finishUnlock({
+    title: 'Results unlocked.',
+    body: 'Your full breakdown is below.'
   });
+}
 
-  // Always reveal breakdown client-side immediately
+// Path B, step 1: send them to the real waitlist to actually sign up
+function openWaitlist() {
+  const input = document.getElementById('gate-email-new');
+  const email = input.value.trim();
+  if (!email || !EMAIL_RE.test(email)) {
+    input.style.borderColor = 'var(--red)';
+    return;
+  }
+  input.style.borderColor = '';
+  window.open(`https://billionairesignal.com/waitlist?email=${encodeURIComponent(email)}`, '_blank', 'noopener');
+
+  hideAllGateSteps();
+  document.getElementById('gate-waiting').style.display = 'block';
+}
+
+// Path B, step 2: they click this after actually completing signup in the other tab
+// NOTE: this is a self-reported confirmation, same as Path A — we have no way to verify
+// waitlist membership from this static page. Real verification requires the dev-brief.md
+// API (POST /api/waitlist-subscribe + GET /api/waitlist-check) to be built and wired in here.
+function unlockAfterJoin() {
+  finishUnlock({
+    title: "You're on the list.",
+    body: 'Your full breakdown is below. Check your email for the Signal Quality Checklist PDF once the team ships it.'
+  });
+}
+
+function finishUnlock({ title, body }) {
   revealBreakdown();
-
-  document.getElementById('gate-form-wrap').style.display = 'none';
+  hideAllGateSteps();
+  document.getElementById('gate-confirm-title').textContent = title;
+  document.getElementById('gate-confirm-body').textContent = body;
   document.getElementById('gate-confirm').classList.add('visible');
 }
 
@@ -888,8 +969,9 @@ function resetChecker() {
   document.getElementById('results').classList.remove('visible');
   document.getElementById('breakdown').classList.remove('visible');
   document.getElementById('gate-confirm').classList.remove('visible');
-  document.getElementById('gate-form-wrap').style.display = 'block';
-  document.getElementById('gate-email').value = '';
+  backToChoice();
+  document.getElementById('gate-email-existing').value = '';
+  document.getElementById('gate-email-new').value = '';
   document.getElementById('wr-context-field').style.display = 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
