@@ -160,18 +160,19 @@
 
     /* radio / select */
     .radio-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .radio-pill { cursor: pointer; }
     .radio-pill input { display: none; }
-    .radio-pill label {
+    .radio-pill span {
       display: block; padding: 7px 14px;
       border: 1px solid #222; border-radius: 2px;
       font-size: 12px; font-weight: 500; color: var(--muted);
       cursor: pointer; letter-spacing: .03em;
       transition: border-color .15s, color .15s, background .15s;
     }
-    .radio-pill input:checked + label {
+    .radio-pill input:checked + span {
       border-color: var(--gold-dim); color: var(--gold-lt); background: rgba(201,168,76,0.06);
     }
-    .radio-pill label:hover { border-color: #333; color: #8a8070; }
+    .radio-pill:hover span { border-color: #333; color: #8a8070; }
 
     .form-select {
       background: #0d0d0d; border: 1px solid #222; border-radius: 2px;
