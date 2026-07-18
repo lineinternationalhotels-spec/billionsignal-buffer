@@ -319,19 +319,6 @@
     .gate-privacy { font-size: 10px; color: #6e6456; margin-top: 10px; }
     .gate-privacy a { color: var(--gold-dim); text-decoration: underline; }
 
-    /* gate choice buttons */
-    .gate-choice-row { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; }
-    .btn-gate-choice {
-      flex: 1; display: flex; flex-direction: column; gap: 4px;
-      background: #0d0d0d; border: 1px solid #2a2210; border-radius: 3px;
-      padding: 16px 14px; cursor: pointer;
-      transition: border-color .15s, background .15s;
-      text-align: left;
-    }
-    .btn-gate-choice:hover { border-color: var(--gold-dim); background: #131109; }
-    .choice-title { font-size: 12px; font-weight: 600; color: #d0c8b8; }
-    .choice-sub { font-size: 10.5px; color: var(--muted); }
-
     /* confirm state */
     .gate-confirm { display: none; text-align: center; padding: 8px 0; }
     .gate-confirm.visible { display: block; }
@@ -620,46 +607,15 @@
       <h2>Unlock Your <em>Full Breakdown</em></h2>
       <p>The full itemised score for all 13 criteria — plus the Signal Quality Checklist PDF — is reserved for the Billionaire Signal waitlist. It's free to join.</p>
 
-      <!-- Step 1: are they already on the waitlist? -->
-      <div id="gate-step-choice">
-        <div class="gate-choice-row">
-          <button type="button" class="btn-gate-choice" onclick="showAlreadyMember()">
-            <span class="choice-title">I'm already on the waitlist</span>
-            <span class="choice-sub">Enter your email to unlock</span>
-          </button>
-          <button type="button" class="btn-gate-choice" onclick="showNewMember()">
-            <span class="choice-title">I'm new here</span>
-            <span class="choice-sub">Join free, then unlock</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Path A: already a member — self-reported, immediate reveal -->
-      <div id="gate-already" style="display:none;">
+      <!-- Single email field. We check it against the real waitlist automatically where
+           possible, and if you're not on it yet, we save your email and unlock anyway
+           so nothing blocks you — see gate-status for what actually happened. -->
+      <div id="gate-form-wrap">
         <div class="gate-form">
-          <input type="email" id="gate-email-existing" class="gate-input" placeholder="Enter the email you signed up with" />
-          <button type="button" class="btn-unlock" onclick="unlockAsExisting()">Show My Results →</button>
+          <input type="email" id="gate-email" class="gate-input" placeholder="Enter your email" />
+          <button type="button" class="btn-unlock" onclick="unlockGate()">Unlock Free →</button>
         </div>
-        <div class="gate-privacy">We can't yet auto-verify waitlist membership from this page — this unlocks your results on trust. <a href="#" onclick="backToChoice();return false;">← Back</a></div>
-      </div>
-
-      <!-- Path B: new — send straight to the real waitlist, no email asked here -->
-      <div id="gate-new" style="display:none;">
-        <p style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:18px;">You'll be taken to billionairesignal.com to join — it takes about 20 seconds. Come back here after and we'll unlock your results.</p>
-        <button type="button" class="btn-unlock" onclick="openWaitlist()">Go to the Waitlist →</button>
-        <div class="gate-privacy"><a href="#" onclick="backToChoice();return false;">← Back</a></div>
-      </div>
-
-      <!-- Path B, step 2: waiting for them to come back — email asked here, to confirm -->
-      <div id="gate-waiting" style="display:none;">
-        <div class="gate-confirm-icon" style="color:var(--gold);">↗</div>
-        <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:var(--gold-lt);margin-bottom:8px;">Complete sign-up in the new tab</h3>
-        <p style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Once you've joined on billionairesignal.com, enter the same email below to confirm and unlock your results.</p>
-        <div class="gate-form">
-          <input type="email" id="gate-email-waiting" class="gate-input" placeholder="Email you signed up with" />
-          <button type="button" class="btn-unlock" onclick="unlockAfterJoin()">Confirm &amp; Unlock →</button>
-        </div>
-        <div class="gate-privacy" id="gate-waiting-status">Checking automatically where possible — otherwise this unlocks on trust. <a href="#" onclick="backToChoice();return false;">← Back</a></div>
+        <div class="gate-privacy" id="gate-status">We'll check this against the waitlist automatically — if you're not on it yet, we'll save your email so the team can add you.</div>
       </div>
 
       <div class="gate-confirm" id="gate-confirm">
@@ -860,31 +816,10 @@ function runScorer(f) {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function hideAllGateSteps() {
-  ['gate-step-choice','gate-already','gate-new','gate-waiting'].forEach(id => {
-    document.getElementById(id).style.display = 'none';
-  });
-}
-
-function backToChoice() {
-  hideAllGateSteps();
-  document.getElementById('gate-step-choice').style.display = 'block';
-}
-
-function showAlreadyMember() {
-  hideAllGateSteps();
-  document.getElementById('gate-already').style.display = 'block';
-}
-
-function showNewMember() {
-  hideAllGateSteps();
-  document.getElementById('gate-new').style.display = 'block';
-}
-
 // TEMP interim capture — a Google Form acting as our own list until the dev-brief.md
-// API (GET /api/waitlist-check, POST /api/waitlist-subscribe) is live. Every unlock,
-// on either path, gets logged here so the team can manually reconcile against the real
-// waitlist in the meantime. Remove this once real verification is wired in above.
+// API (GET /api/waitlist-check, POST /api/waitlist-subscribe) is live. Every unlock
+// gets logged here so the team can manually reconcile against the real waitlist in
+// the meantime. Remove this once real verification is wired in below.
 const TEMP_LIST_FORM_ACTION = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSfve1DBIpB15v8fbEI3jrxTbxYqiSh7SIYjwRLLyB8TjMzhFg/formResponse';
 const TEMP_LIST_ENTRY_EMAIL = 'entry.1692850111';
 const TEMP_LIST_ENTRY_META = 'entry.615397963';
@@ -898,37 +833,12 @@ function logToTempList(email, meta) {
   } catch (e) { /* best-effort only */ }
 }
 
-// Path A: self-reported existing member — no verification possible client-side.
-// We log the email to our temp list and unlock on trust.
-function unlockAsExisting() {
-  const input = document.getElementById('gate-email-existing');
-  const email = input.value.trim();
-  if (!email || !EMAIL_RE.test(email)) {
-    input.style.borderColor = 'var(--red)';
-    return;
-  }
-  input.style.borderColor = '';
-  const band = document.getElementById('band-label').textContent;
-  logToTempList(email, `already-member | score ${currentScore}/${TOTAL} | ${band}`);
-  finishUnlock({
-    title: 'Results unlocked.',
-    body: 'Your full breakdown is below.'
-  });
-}
-
-// Path B, step 1: send them straight to the real waitlist — no email needed yet
-function openWaitlist() {
-  window.open('https://billionairesignal.com/waitlist', '_blank', 'noopener');
-  hideAllGateSteps();
-  document.getElementById('gate-waiting').style.display = 'block';
-}
-
-// Path B, step 2: they come back and enter the email they just signed up with.
-// We attempt a real check against the waitlist API first (GET /api/waitlist-check?email=)
-// — this only exists once the dev-brief.md API work ships. Until then it fails silently
-// and we fall back to an honest self-reported unlock, clearly labelled as such.
-async function unlockAfterJoin() {
-  const input = document.getElementById('gate-email-waiting');
+// Single email box. We attempt a real check against the waitlist API first
+// (GET /api/waitlist-check?email=) — this only exists once the dev-brief.md API
+// work ships. Until then it fails silently and we fall back to logging the email
+// to our temp list and unlocking anyway, clearly labelled as self-reported.
+async function unlockGate() {
+  const input = document.getElementById('gate-email');
   const email = input.value.trim();
   if (!email || !EMAIL_RE.test(email)) {
     input.style.borderColor = 'var(--red)';
@@ -936,7 +846,7 @@ async function unlockAfterJoin() {
   }
   input.style.borderColor = '';
 
-  const statusEl = document.getElementById('gate-waiting-status');
+  const statusEl = document.getElementById('gate-status');
   statusEl.innerHTML = 'Checking…';
 
   let verified = null; // null = couldn't check, true/false = real API result
@@ -958,28 +868,24 @@ async function unlockAfterJoin() {
   const band = document.getElementById('band-label').textContent;
 
   if (verified === true) {
-    logToTempList(email, `new-member (api-verified) | score ${currentScore}/${TOTAL} | ${band}`);
     finishUnlock({
       title: "You're confirmed on the waitlist.",
       body: 'Your full breakdown is below. Check your email for the Signal Quality Checklist PDF.'
     });
-  } else if (verified === false) {
-    statusEl.innerHTML = 'We couldn\'t find that email on the waitlist yet — sign-ups can take a minute to sync. <a href="#" onclick="unlockAfterJoin();return false;">Try again</a> or <a href="https://billionairesignal.com/waitlist" target="_blank" rel="noopener">join now</a>.';
-    statusEl.style.color = 'var(--red)';
   } else {
-    // No live verification endpoint yet — we save the email to our temp list ourselves
-    // so the team can add them to the real waitlist by hand until the API ships.
-    logToTempList(email, `new-member (self-reported, needs manual add) | score ${currentScore}/${TOTAL} | ${band}`);
+    // Not verified (endpoint not live yet, or email not found) — save to our temp
+    // list so the team can add them by hand, and unlock anyway so nothing blocks them.
+    logToTempList(email, `score ${currentScore}/${TOTAL} | ${band}`);
     finishUnlock({
-      title: 'Thanks for joining!',
-      body: "We've saved your email — our team will personally add you to the main waitlist until this connects automatically. Your full breakdown is below."
+      title: 'Results unlocked.',
+      body: "We've saved your email so our team can make sure you're on the main waitlist. Your full breakdown is below."
     });
   }
 }
 
 function finishUnlock({ title, body }) {
   revealBreakdown();
-  hideAllGateSteps();
+  document.getElementById('gate-form-wrap').style.display = 'none';
   document.getElementById('gate-confirm-title').textContent = title;
   document.getElementById('gate-confirm-body').textContent = body;
   document.getElementById('gate-confirm').classList.add('visible');
@@ -1026,9 +932,10 @@ function resetChecker() {
   document.getElementById('results').classList.remove('visible');
   document.getElementById('breakdown').classList.remove('visible');
   document.getElementById('gate-confirm').classList.remove('visible');
-  backToChoice();
-  document.getElementById('gate-email-existing').value = '';
-  document.getElementById('gate-email-waiting').value = '';
+  document.getElementById('gate-form-wrap').style.display = 'block';
+  document.getElementById('gate-email').value = '';
+  document.getElementById('gate-status').innerHTML = 'We\'ll check this against the waitlist automatically — if you\'re not on it yet, we\'ll save your email so the team can add you.';
+  document.getElementById('gate-status').style.color = '';
   document.getElementById('wr-context-field').style.display = 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
