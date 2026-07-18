@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signal Quality Checker — Billionaire Signal</title>
+  <meta name="description" content="Paste in any signal or setup. Get an instant structural quality score based on the 12-point Billionaire Signal vetting framework — free, no account needed." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://billionsignal.com/checker.html" />
+  <meta property="og:title" content="Signal Quality Checker — Billionaire Signal" />
+  <meta property="og:description" content="Score any trading signal in 60 seconds. Free tool." />
+  <meta property="og:url" content="https://billionsignal.com/checker.html" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/lineinternationalhotels-spec/billionsignal-buffer/main/logo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@Bil_Signal" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Signal Quality Checker",
+    "url": "https://billionsignal.com/checker.html",
+    "description": "Score the structural completeness of any trading signal or setup using the Billionaire Signal 12-point vetting framework.",
+    "applicationCategory": "FinanceApplication",
+    "publisher": { "@type": "Organization", "name": "Billionaire Signal", "url": "https://billionairesignal.com" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:     #c9a84c;
+      --gold-lt:  #e8c97a;
+      --gold-dim: #8a6f35;
+      --red:      #e05555;
+      --red-dim:  #7a2020;
+      --green:    #4caf6f;
+      --green-dim:#1e5c35;
+      --yellow:   #e8c048;
+      --black:    #050505;
+      --dark:     #0d0d0d;
+      --dark-2:   #111111;
+      --dark-3:   #161616;
+      --border:   #1c1c1c;
+      --text:     #e8e0d0;
+      --muted:    #5a5248;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(5,5,5,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { width: 32px; height: 32px; object-fit: contain; mix-blend-mode: multiply; }
+    .nav-brand { font-family: 'Playfair Display', serif; font-size: 15px; color: #fff; }
+    .nav-back {
+      margin-left: auto;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--gold-dim); text-decoration: none;
+      border: 1px solid #222; border-radius: 2px; padding: 5px 10px;
+      transition: color .15s, border-color .15s;
+    }
+    .nav-back:hover { color: var(--gold-lt); border-color: var(--gold-dim); }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 640px; margin: 0 auto;
+      padding: 52px 24px 32px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      font-size: 9px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); border: 1px solid var(--gold-dim);
+      padding: 4px 12px; border-radius: 2px; margin-bottom: 20px;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 5vw, 42px); font-weight: 700;
+      color: #fff; line-height: 1.12; letter-spacing: -.01em;
+      margin-bottom: 16px;
+    }
+    h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--gold), var(--gold-lt));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+      font-size: 14px; color: var(--muted); line-height: 1.75;
+      max-width: 480px; margin: 0 auto 28px;
+    }
+    .disclaimer-banner {
+      background: #0e0c08; border: 1px solid #2a2210;
+      border-radius: 3px; padding: 12px 16px;
+      font-size: 11px; color: #7a6f5a; line-height: 1.65;
+      text-align: left;
+    }
+    .disclaimer-banner strong { color: var(--gold-dim); font-weight: 500; }
+
+    /* ── ORNAMENT ── */
+    .ornament {
+      display: flex; align-items: center; gap: 14px;
+      max-width: 300px; margin: 32px auto;
+    }
+    .ornament-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold-dim) 80%); }
+    .ornament-line:last-child { background: linear-gradient(to left, transparent, var(--gold-dim) 80%); }
+    .ornament-diamond { width: 6px; height: 6px; background: var(--gold-dim); transform: rotate(45deg); flex-shrink: 0; }
+
+    /* ── FORM ── */
+    #checker-form {
+      max-width: 640px; margin: 0 auto;
+      padding: 0 20px 60px;
+      display: flex; flex-direction: column; gap: 32px;
+    }
+
+    .form-section {}
+    .section-label {
+      font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold-dim); margin-bottom: 12px;
+    }
+    .section-desc { font-size: 12px; color: #3a3530; margin-bottom: 14px; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+    .field:last-child { margin-bottom: 0; }
+
+    .field-card {
+      background: var(--dark-2); border: 1px solid var(--border);
+      border-radius: 3px; padding: 16px 18px;
+    }
+    .field-card.conditional { display: none; margin-left: 20px; }
+    .field-card.conditional.visible { display: flex; flex-direction: column; gap: 6px; }
+
+    .field-q {
+      font-size: 13px; font-weight: 500; color: #d0c8b8;
+      margin-bottom: 10px; line-height: 1.5;
+    }
+    .field-hint {
+      font-size: 11px; color: #3a3530; margin-bottom: 10px; font-style: italic;
+    }
+
+    /* radio / select */
+    .radio-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .radio-pill input { display: none; }
+    .radio-pill label {
+      display: block; padding: 7px 14px;
+      border: 1px solid #222; border-radius: 2px;
+      font-size: 12px; font-weight: 500; color: var(--muted);
+      cursor: pointer; letter-spacing: .03em;
+      transition: border-color .15s, color .15s, background .15s;
+    }
+    .radio-pill input:checked + label {
+      border-color: var(--gold-dim); color: var(--gold-lt); background: rgba(201,168,76,0.06);
+    }
+    .radio-pill label:hover { border-color: #333; color: #8a8070; }
+
+    .form-select {
+      background: #0d0d0d; border: 1px solid #222; border-radius: 2px;
+      color: var(--text); font-family: 'Inter', sans-serif;
+      font-size: 12px; padding: 9px 12px; width: 100%;
+      appearance: none; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238a6f35'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+      padding-right: 32px;
+    }
+    .form-select:focus { outline: none; border-color: var(--gold-dim); }
+
+    /* redflag section */
+    .redflag-card {
+      background: #100808; border: 1px solid #2d1010; border-radius: 3px; padding: 16px 18px;
+    }
+    .redflag-label {
+      font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .redflag-label::before { content: '⚠'; font-size: 11px; }
+
+    /* submit btn */
+    .submit-wrap { text-align: center; padding-top: 8px; }
+    .btn-score {
+      display: inline-block; padding: 16px 48px;
+      background: linear-gradient(135deg, #c9a84c, #e8c97a);
+      color: #050505; font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+      border: none; border-radius: 2px; cursor: pointer;
+      transition: opacity .15s, transform .1s;
+    }
+    .btn-score:hover { opacity: .88; transform: translateY(-1px); }
+    .btn-score:active { transform: translateY(0); }
+    .submit-note { font-size: 11px; color: #333; margin-top: 10px; }
+
+    /* ── RESULTS ── */
+    #results { display: none; }
+    #results.visible { display: block; }
+
+    .results-wrap {
+      max-width: 640px; margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    /* score card */
+    .score-card {
+      background: var(--dark-2); border: 1px solid var(--border);
+      border-radius: 3px; padding: 36px 28px; text-align: center;
+      margin-bottom: 16px; position: relative; overflow: hidden;
+    }
+    .score-card::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    }
+    .score-card.band-well::before { background: var(--green); }
+    .score-card.band-incomplete::before { background: var(--yellow); }
+    .score-card.band-gaps::before { background: var(--red); }
+
+    .score-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 72px; font-weight: 700; line-height: 1;
+      margin-bottom: 4px;
+    }
+    .band-well .score-number { color: var(--green); }
+    .band-incomplete .score-number { color: var(--yellow); }
+    .band-gaps .score-number { color: var(--red); }
+
+    .score-denom { font-size: 28px; color: #3a3530; font-family: 'Playfair Display', serif; }
+    .band-label {
+      display: inline-block; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 2px; margin: 16px 0 12px;
+    }
+    .band-well .band-label { background: rgba(76,175,111,0.12); color: var(--green); border: 1px solid rgba(76,175,111,0.25); }
+    .band-incomplete .band-label { background: rgba(232,192,72,0.1); color: var(--yellow); border: 1px solid rgba(232,192,72,0.25); }
+    .band-gaps .band-label { background: rgba(224,85,85,0.1); color: var(--red); border: 1px solid rgba(224,85,85,0.25); }
+
+    .band-desc { font-size: 13px; color: var(--muted); line-height: 1.65; max-width: 440px; margin: 0 auto; }
+
+    /* red flags box */
+    .redflags-box {
+      background: #0f0606; border: 1px solid #3d1515;
+      border-radius: 3px; padding: 20px 20px;
+      margin-bottom: 16px;
+    }
+    .redflags-box h3 {
+      font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .redflags-box h3::before { content: '⚠'; }
+    .redflag-item {
+      font-size: 12px; color: #c47070; line-height: 1.65;
+      padding: 10px 12px; background: rgba(224,85,85,0.05);
+      border-left: 2px solid var(--red-dim); border-radius: 1px;
+      margin-bottom: 8px;
+    }
+    .redflag-item:last-child { margin-bottom: 0; }
+
+    /* gate */
+    .gate-card {
+      background: linear-gradient(135deg, #1a1508 0%, #0e0e0e 100%);
+      border: 1px solid #3a2e14; border-radius: 3px;
+      padding: 32px 28px; text-align: center;
+      margin-bottom: 16px;
+    }
+    .gate-card h2 {
+      font-family: 'Playfair Display', serif; font-size: 22px;
+      color: #fff; margin-bottom: 10px;
+    }
+    .gate-card h2 em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--gold), var(--gold-lt));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .gate-card p {
+      font-size: 13px; color: var(--muted); line-height: 1.7;
+      max-width: 400px; margin: 0 auto 24px;
+    }
+    .gate-free-badge {
+      display: inline-block; font-size: 9px; font-weight: 600;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--green); border: 1px solid rgba(76,175,111,.3);
+      padding: 3px 10px; border-radius: 2px; margin-bottom: 20px;
+    }
+    .gate-form { display: flex; gap: 8px; max-width: 400px; margin: 0 auto; }
+    .gate-input {
+      flex: 1; background: #0d0d0d; border: 1px solid #2a2210;
+      border-radius: 2px; color: var(--text); font-family: 'Inter', sans-serif;
+      font-size: 13px; padding: 12px 14px;
+    }
+    .gate-input::placeholder { color: #3a3530; }
+    .gate-input:focus { outline: none; border-color: var(--gold-dim); }
+    .btn-unlock {
+      padding: 12px 20px; background: linear-gradient(135deg, #c9a84c, #e8c97a);
+      color: #050505; font-family: 'Inter', sans-serif;
+      font-size: 12px; font-weight: 600; letter-spacing: .05em;
+      border: none; border-radius: 2px; cursor: pointer; white-space: nowrap;
+      transition: opacity .15s;
+    }
+    .btn-unlock:hover { opacity: .88; }
+    .gate-privacy { font-size: 10px; color: #2a2520; margin-top: 10px; }
+    .gate-privacy a { color: #3a3530; text-decoration: none; }
+
+    /* confirm state */
+    .gate-confirm { display: none; text-align: center; padding: 8px 0; }
+    .gate-confirm.visible { display: block; }
+    .gate-confirm-icon { font-size: 32px; margin-bottom: 10px; }
+    .gate-confirm h3 { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--gold-lt); margin-bottom: 8px; }
+    .gate-confirm p { font-size: 12px; color: var(--muted); line-height: 1.7; }
+    .gate-confirm a { color: var(--gold); text-decoration: none; }
+
+    /* breakdown */
+    #breakdown { display: none; }
+    #breakdown.visible { display: block; }
+
+    .breakdown-header {
+      font-size: 9px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--gold-dim); margin-bottom: 12px;
+    }
+
+    .check-item {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 16px; margin-bottom: 8px;
+      background: var(--dark-2); border: 1px solid var(--border); border-radius: 3px;
+    }
+    .check-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .check-body { flex: 1; min-width: 0; }
+    .check-label { font-size: 12px; font-weight: 500; color: #d0c8b8; margin-bottom: 3px; }
+    .check-why { font-size: 11px; color: var(--muted); line-height: 1.6; }
+    .check-item.pass { border-left: 2px solid var(--green); }
+    .check-item.fail { border-left: 2px solid #3d2020; }
+    .check-item.redflag-fail { border-left: 2px solid var(--red); background: #0d0606; }
+
+    /* waitlist CTA */
+    .waitlist-cta {
+      background: var(--dark-2); border: 1px solid var(--border);
+      border-radius: 3px; padding: 28px; text-align: center;
+      margin-top: 32px;
+    }
+    .waitlist-cta h3 { font-family: 'Playfair Display', serif; font-size: 20px; color: #fff; margin-bottom: 8px; }
+    .waitlist-cta p { font-size: 12px; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
+    .btn-waitlist {
+      display: inline-block; padding: 13px 32px;
+      background: linear-gradient(135deg, #c9a84c, #e8c97a);
+      color: #050505; font-size: 12px; font-weight: 600;
+      letter-spacing: .06em; text-transform: uppercase;
+      text-decoration: none; border-radius: 2px;
+      transition: opacity .15s;
+    }
+    .btn-waitlist:hover { opacity: .88; }
+
+    /* persistent disclaimer */
+    .persistent-disclaimer {
+      max-width: 640px; margin: 24px auto 0;
+      padding: 14px 20px;
+      background: #0a0a08; border: 1px solid #1a1a14;
+      border-radius: 3px; font-size: 10px; color: #333;
+      line-height: 1.7; text-align: center;
+    }
+
+    /* reset */
+    .btn-reset {
+      display: block; margin: 24px auto 0;
+      background: none; border: 1px solid #1c1c1c;
+      color: var(--muted); font-family: 'Inter', sans-serif;
+      font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+      padding: 9px 18px; border-radius: 2px; cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .btn-reset:hover { border-color: #333; color: #8a8070; }
+
+    /* footer */
+    footer {
+      text-align: center; padding: 20px 24px 32px;
+      font-size: 10px; color: #222; letter-spacing: .06em;
+    }
+    footer a { color: #2a2a2a; text-decoration: none; }
+
+    @media (max-width: 480px) {
+      .gate-form { flex-direction: column; }
+      .score-number { font-size: 56px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="https://raw.githubusercontent.com/lineinternationalhotels-spec/billionsignal-buffer/main/logo.png" alt="Billionaire Signal" />
+    <span class="nav-brand">Billionaire Signal</span>
+  </a>
+  <a href="index.html" class="nav-back">← Back</a>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-badge">Free Tool · No Account Required</div>
+  <h1>Score Any<br/><em>Signal or Setup</em></h1>
+  <p class="hero-sub">Paste in a trading signal you've received or a setup you're evaluating. We'll score how completely it's documented — using the same 12-point framework Billionaire Signal uses to vet every provider.</p>
+  <div class="disclaimer-banner">
+    <strong>What this tool does:</strong> It scores how well-documented and structurally complete a setup is. It does not evaluate profitability, predict outcomes, or tell you whether to take any trade. It is an educational tool, not financial advice.
+  </div>
+</div>
+
+<div class="ornament" style="max-width:640px;margin:0 auto 32px;padding:0 20px;">
+  <div class="ornament-line"></div>
+  <div class="ornament-diamond"></div>
+  <div class="ornament-line"></div>
+</div>
+
+<!-- ── FORM ── -->
+<form id="checker-form" novalidate>
+
+  <!-- SECTION 1: Core Parameters -->
+  <div class="form-section">
+    <div class="section-label">01 — Core Trade Parameters</div>
+
+    <div class="field-card">
+      <div class="field-q">Entry price specified?</div>
+      <div class="radio-group">
+        <label class="radio-pill"><input type="radio" name="entry" value="yes" required /><span>Yes</span></label>
+        <label class="radio-pill"><input type="radio" name="entry" value="no" /><span>No</span></label>
+      </div>
+    </div>
+
+    <div class="field-card" style="margin-top:8px;">
+      <div class="field-q">Stop-loss specified?</div>
+      <div class="radio-group">
+        <label class="radio-pill"><input type="radio" name="stoploss" value="yes" required /><span>Yes</span></label>
+        <label class="radio-pill"><input type="radio" name="stoploss" value="no" /><span>No</span></label>
+      </div>
+    </div>
+
+    <div class="field-card" style="margin-top:8px;">
+      <div class="field-q">Profit target specified?</div>
+      <div class="radio-group">
+        <label class="radio-pill"><input type="radio" name="target" value="yes" required /><span>Yes</span></label>
+        <label class="radio-pill"><input type="radio" name="target" value="no" /><span>No</span></label>
+      </div>
+    </div>
+
+    <div class="field-card" style="margin-top:8px;">
+      <div class="field-q">Is the risk-reward ratio (R:R) stated explicitly — not just implied from the entry/stop/target?</div>
+      <div class="radio-group">
+        <label class="radio-pill"><input type="radio" name="rr" value="yes" required /><span>Yes, stated</span></label>
+        <label class="radio-pill"><input type="radio" name="rr" value="no" /><span>Not stated</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Track Record & Stats -->
+  <div class="form-section">
+    <div class="section-label">02 — Track Record &amp; Statistics</div>
+
+    <div class="field-card">
+      <div class="field-q">Is a win rate claimed?</div>
+      <div class="radio-group">
+        <label class="radio-pill"><input type="radio" name="winrate" value="yes" required id="wr-yes" /><span>Yes</span></label>
+        <label class="radio-pill"><input type="radio" name="winrate" value="no" /><span>No</span></label>
+        <label class="radio-pill"><input type="radio" name="winrate" value="na" /><span>Not applicable</span></label>
+      </div>
+    </div>
+
+    <div class="field-card conditional" id="wr-context-field" style="margin-top:8px;">
+      <div class="field-q">Does the win rate include a sample size <em>and</em> a date range?</div>
+      <div class="field-hint">e.g. "72% win rate across 180 trades, Jan–Dec 2024"</div>
+      <div class="radio-group">
+        <label class="radio-pill"><input type="radio" name="winrate_context" value="yes" /><span>Yes, both included</span></label>
+        <label class="radio-pill"><input type="radio" name="winrate_context" value="partial" /><span>Only one</span></label>
+        <label class="radio-pill"><input type="radio" name="winrate_context" value="no" /><span>Neither</span></label>
+      </div>
+    </div>
+
+    <div class="field-card" style="margin-top:8px;">
+      <div class="field-q">How has this setup or strategy been tested?</div>
+      <select name="tested" class="form-select" required>
+        <option value="">— Select —</option>
+        <option value="live">Live / forward-tested (real money, documented)</option>
+        <option value="backtested">Backtested and clearly labelled as such</option>
+        <option value="none">No testing mentioned</option>
+      </select>
+    </div>
+
+    <div class="field-card" style="margin-top:8px;">
+      <div class="field-q">How is the track record presented?</div>
+      <select name="trackrecord" class="form-select" required>
+        <option value="">— Select —</option>
+        <option value="full">Full history — wins and losses visible</option>
+        <option value="highlights">Selected highlights only</option>
+        <option value="none">No track record shown</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Context & Structure -->
+  <div class="form-section">
+    <div class="section-label">03 — Context &amp; Structure</div>
+
+    <div class="field-card">
+      <div class="field-q">Which market condition is this setup designed for?</div>
+      <select name="condition" class="form-select" required>
+        <option value="">— Select —</option>
+        <option value="trending">Trending markets</option>
+        <option value="ranging">Ranging / sideways markets</option>
+        <option value="either">Either / works in both</option>
+        <option value="none">Not specified</option>
+      </select>
+    </div>
+
+    <div class="field-card" style="margin-top:8px;">
+      <div class="field-q">Is position sizing guidance included?</div>
+      <div class="field-hint">e.g. % of account, fixed lot size, or risk per trade in dollar/% terms</div>
+      <div class="radio-group">
+        <label class="radio-pill"><input type="radio" name="sizing" value="yes" required /><span>Yes</span></label>
+        <label class="radio-pill"><input type="radio" name="sizing" value="no" /><span>No</span></label>
+      </div>
+    </div>
+
+    <div class="field-card" style="margin-top:8px;">
+      <div class="field-q">Is the reasoning explained, or is it just a conclusion?</div>
+      <div class="field-hint">"Buy BTC at 62k" is a conclusion. Reasoning explains <em>why</em> — e.g. support level, pattern, macro context.</div>
+      <div class="radio-group">
+        <label class="radio-pill"><input type="radio" name="reasoning" value="yes" required /><span>Reasoning explained</span></label>
+        <label class="radio-pill"><input type="radio" name="reasoning" value="no" /><span>Conclusion only</span></label>
+      </div>
+    </div>
+
+    <div class="field-card" style="margin-top:8px;">
+      <div class="field-q">Is an invalidation condition stated? (i.e. "this idea is wrong if ___")</div>
+      <div class="field-hint">Different from the stop-loss — this is the <em>logical</em> trigger that means the thesis has broken down.</div>
+      <div class="radio-group">
+        <label class="radio-pill"><input type="radio" name="invalidation" value="yes" required /><span>Yes, stated</span></label>
+        <label class="radio-pill"><input type="radio" name="invalidation" value="no" /><span>Not stated</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: Red Flags -->
+  <div class="form-section">
+    <div class="redflag-card">
+      <div class="redflag-label">Red Flag Checks</div>
+
+      <div class="field" style="margin-bottom:14px;">
+        <div class="field-q">Does the signal use any of the following language: <strong>"guaranteed," "risk-free," "proven results," "100% win rate"</strong>?</div>
+        <div class="radio-group">
+          <label class="radio-pill"><input type="radio" name="redflag_language" value="yes" required /><span>Yes</span></label>
+          <label class="radio-pill"><input type="radio" name="redflag_language" value="no" /><span>No</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-q">Does it apply urgency pressure to <em>this specific trade</em>? (e.g. "act now before it's too late," "last chance," "only a few spots")</div>
+        <div class="radio-group">
+          <label class="radio-pill"><input type="radio" name="urgency" value="yes" required /><span>Yes</span></label>
+          <label class="radio-pill"><input type="radio" name="urgency" value="no" /><span>No</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-wrap">
+    <button type="submit" class="btn-score">Score This Setup →</button>
+    <div class="submit-note" id="form-error" style="color:#e05555;display:none;">Please answer all questions before scoring.</div>
+  </div>
+
+</form>
+
+<!-- ── RESULTS ── -->
+<div id="results">
+  <div class="results-wrap">
+
+    <!-- Score Card -->
+    <div class="score-card" id="score-card">
+      <div class="score-number" id="score-number">—</div>
+      <div class="band-label" id="band-label">—</div>
+      <p class="band-desc" id="band-desc">—</p>
+    </div>
+
+    <!-- Red Flags (if any) -->
+    <div class="redflags-box" id="redflags-box" style="display:none;">
+      <h3>Red Flags Detected</h3>
+      <div id="redflag-items"></div>
+    </div>
+
+    <!-- Gate Card -->
+    <div class="gate-card" id="gate-card">
+      <div class="gate-free-badge">100% Free · No Payment Required</div>
+      <h2>Unlock Your <em>Full Breakdown</em></h2>
+      <p>Get the itemised score for all 13 criteria with plain-language explanations — plus the Signal Quality Checklist PDF to keep. Join our waitlist to unlock instantly.</p>
+
+      <div id="gate-form-wrap">
+        <div class="gate-form">
+          <input type="email" id="gate-email" class="gate-input" placeholder="Enter your email" />
+          <button type="button" class="btn-unlock" onclick="submitGate()">Unlock Free →</button>
+        </div>
+        <div class="gate-privacy">No spam. Just the breakdown + the checklist. Unsubscribe anytime.</div>
+      </div>
+
+      <div class="gate-confirm" id="gate-confirm">
+        <div class="gate-confirm-icon">✓</div>
+        <h3>You're on the list.</h3>
+        <p>Your full breakdown is below. We've also added you to the Billionaire Signal early access list —<br/>
+        check your email for the Signal Quality Checklist PDF.<br/><br/>
+        <a href="https://billionairesignal.com/waitlist" target="_blank" rel="noopener">Visit billionairesignal.com →</a></p>
+      </div>
+    </div>
+
+    <!-- Full Breakdown (locked until email) -->
+    <div id="breakdown">
+      <div class="breakdown-header">Full Breakdown — 13 Criteria</div>
+      <div id="breakdown-items"></div>
+
+      <div class="waitlist-cta">
+        <h3>Get Signals That Score Like This</h3>
+        <p>Every signal Billionaire Signal publishes is vetted against this exact framework before it reaches you. Join the waitlist for early access.</p>
+        <a href="https://billionairesignal.com/waitlist" target="_blank" rel="noopener noreferrer" class="btn-waitlist">Join the Waitlist — It's Free →</a>
+      </div>
+    </div>
+
+    <div class="persistent-disclaimer">
+      This tool scores how completely a setup is documented. It does not evaluate profitability and is not a recommendation to take any trade. Billionaire Signal is an educational platform. Nothing on this page constitutes financial advice.
+    </div>
+
+    <button class="btn-reset" onclick="resetChecker()">← Score another setup</button>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 Billionaire Signal &nbsp;·&nbsp; <a href="index.html">billionsignal.com</a> &nbsp;·&nbsp; <a href="https://billionairesignal.com" rel="noopener noreferrer">billionairesignal.com</a></p>
+</footer>
+
+<script>
+const CHECKS = [
+  {
+    id: 'entry',
+    label: 'Entry price',
+    score: (f) => f.entry === 'yes' ? 1 : 0,
+    why: 'Without a defined entry price, a setup can\'t be replicated or evaluated — "the price was right" tells you nothing about the logic.'
+  },
+  {
+    id: 'stoploss',
+    label: 'Stop-loss',
+    score: (f) => f.stoploss === 'yes' ? 1 : 0,
+    why: 'A position without a stop has theoretically unlimited downside. The most basic risk control check — it must be present.'
+  },
+  {
+    id: 'target',
+    label: 'Profit target',
+    score: (f) => f.target === 'yes' ? 1 : 0,
+    why: 'Without a target, you can\'t calculate the risk:reward ratio — meaning the setup\'s expected value is unknown.'
+  },
+  {
+    id: 'rr',
+    label: 'R:R ratio (stated explicitly)',
+    score: (f) => f.rr === 'yes' ? 1 : 0,
+    why: 'You can win 80% of trades and still lose money if your average loss dwarfs your average win. R:R stated explicitly is non-negotiable.'
+  },
+  {
+    id: 'winrate',
+    label: 'Win rate (with sample size + date range)',
+    score: (f) => {
+      if (f.winrate === 'na') return 1; // not applicable = no misleading stat = pass
+      if (f.winrate === 'no') return 0;
+      // claimed: only counts if context provided
+      return f.winrate_context === 'yes' ? 1 : 0;
+    },
+    why: '"70% win rate" from 12 trades over a lucky month is statistically meaningless. Credible stats need sample size AND a defined date range.'
+  },
+  {
+    id: 'tested',
+    label: 'Testing methodology',
+    score: (f) => (f.tested === 'live' || f.tested === 'backtested') ? 1 : 0,
+    why: 'Untested setups have no documented basis. If backtested, it must be labelled clearly — live and backtested performance are fundamentally different.'
+  },
+  {
+    id: 'trackrecord',
+    label: 'Track record completeness',
+    score: (f) => f.trackrecord === 'full' ? 1 : 0,
+    why: 'Highlight reels hide losing runs and drawdown periods. Full history — including losses — is the only honest benchmark.'
+  },
+  {
+    id: 'condition',
+    label: 'Market regime specified',
+    score: (f) => f.condition !== 'none' && f.condition !== '' ? 1 : 0,
+    why: 'A breakout strategy in a ranging market will bleed. Every setup is designed for specific conditions — not knowing them is a structural gap.'
+  },
+  {
+    id: 'sizing',
+    label: 'Position sizing guidance',
+    score: (f) => f.sizing === 'yes' ? 1 : 0,
+    why: 'Without sizing guidance, two traders following the same signal can experience wildly different outcomes. Risk is personal — sizing must be included.'
+  },
+  {
+    id: 'reasoning',
+    label: 'Reasoning explained (not just conclusion)',
+    score: (f) => f.reasoning === 'yes' ? 1 : 0,
+    why: '"Buy here" creates dependency on the provider. Explained reasoning lets you judge whether the logic still holds as the trade develops.'
+  },
+  {
+    id: 'invalidation',
+    label: 'Invalidation condition',
+    score: (f) => f.invalidation === 'yes' ? 1 : 0,
+    why: 'Knowing when an idea is wrong is as important as knowing when it\'s right. Without it, exits become emotional rather than logical.'
+  },
+  {
+    id: 'redflag_language',
+    label: 'No forbidden language ("guaranteed," "risk-free," "proven")',
+    isRedFlag: true,
+    score: (f) => f.redflag_language === 'no' ? 1 : 0,
+    failMsg: 'Red Flag: "Guaranteed," "risk-free," or "proven results" language detected. No trading outcome can be guaranteed — this language is either ignorance or intentional misdirection, and is prohibited in regulated markets.',
+    why: 'These claims are prohibited by regulators for good reason. Their presence in a signal is a serious warning sign about the provider\'s credibility or intent.'
+  },
+  {
+    id: 'urgency',
+    label: 'No urgency pressure on this specific trade',
+    isRedFlag: true,
+    score: (f) => f.urgency === 'no' ? 1 : 0,
+    failMsg: 'Red Flag: Urgency tactics detected. Legitimate setups don\'t expire in hours. "Act now or miss out" language is a manipulation tactic designed to bypass your critical thinking.',
+    why: 'Markets always present new opportunities. Manufactured urgency on a specific trade is a psychological tactic — not a quality signal attribute.'
+  }
+];
+
+const TOTAL = 13;
+
+const BANDS = [
+  { min: 10, max: 13, cls: 'band-well',       label: 'Well-Structured',  desc: 'This setup includes the core information a trader needs to evaluate it independently.' },
+  { min: 6,  max: 9,  cls: 'band-incomplete', label: 'Incomplete',       desc: 'This setup is missing key context — see the flagged items below before relying on it.' },
+  { min: 0,  max: 5,  cls: 'band-gaps',       label: 'Major Gaps',       desc: 'This setup is missing most of what\'s needed to evaluate risk. Treat with significant caution.' },
+];
+
+let currentFormData = null;
+let currentScore = 0;
+let currentResults = [];
+
+function getFormData() {
+  const f = {};
+  const form = document.getElementById('checker-form');
+  const data = new FormData(form);
+  for (const [k,v] of data.entries()) f[k] = v;
+  return f;
+}
+
+function validateForm(f) {
+  const required = ['entry','stoploss','target','rr','winrate','tested','trackrecord','condition','sizing','reasoning','invalidation','redflag_language','urgency'];
+  for (const k of required) {
+    if (!f[k]) return false;
+  }
+  // if winrate = yes, winrate_context is required
+  if (f.winrate === 'yes' && !f.winrate_context) return false;
+  return true;
+}
+
+document.getElementById('checker-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const f = getFormData();
+  if (!validateForm(f)) {
+    const err = document.getElementById('form-error');
+    err.style.display = 'block';
+    return;
+  }
+  document.getElementById('form-error').style.display = 'none';
+  runScorer(f);
+});
+
+function runScorer(f) {
+  currentFormData = f;
+  currentResults = CHECKS.map(c => ({ ...c, pts: c.score(f) }));
+  currentScore = currentResults.reduce((a, c) => a + c.pts, 0);
+
+  // score display
+  const band = BANDS.find(b => currentScore >= b.min && currentScore <= b.max);
+  document.getElementById('score-number').innerHTML = `${currentScore}<span class="score-denom">/${TOTAL}</span>`;
+  document.getElementById('band-label').textContent = band.label;
+  document.getElementById('band-desc').textContent = band.desc;
+  const card = document.getElementById('score-card');
+  card.className = `score-card ${band.cls}`;
+
+  // red flags
+  const redflags = currentResults.filter(c => c.isRedFlag && c.pts === 0);
+  const rfBox = document.getElementById('redflags-box');
+  if (redflags.length > 0) {
+    document.getElementById('redflag-items').innerHTML = redflags.map(c =>
+      `<div class="redflag-item">${c.failMsg}</div>`
+    ).join('');
+    rfBox.style.display = 'block';
+  } else {
+    rfBox.style.display = 'none';
+  }
+
+  // show results, hide form
+  document.getElementById('checker-form').style.display = 'none';
+  const results = document.getElementById('results');
+  results.classList.add('visible');
+  results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function submitGate() {
+  const email = document.getElementById('gate-email').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('gate-email').style.borderColor = 'var(--red)';
+    return;
+  }
+  document.getElementById('gate-email').style.borderColor = '';
+
+  // Try the API — falls back to opening waitlist page
+  // API_ENDPOINT: replace with live endpoint when devs ship it
+  const payload = {
+    email,
+    source: 'signal-checker',
+    score: currentScore,
+    score_total: TOTAL,
+    score_band: document.getElementById('band-label').textContent
+  };
+
+  fetch('https://billionairesignal.com/api/waitlist-subscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).catch(() => {
+    // Fallback: open waitlist page with email pre-filled
+    window.open(`https://billionairesignal.com/waitlist?email=${encodeURIComponent(email)}`, '_blank');
+  });
+
+  // Always reveal breakdown client-side immediately
+  revealBreakdown();
+
+  document.getElementById('gate-form-wrap').style.display = 'none';
+  document.getElementById('gate-confirm').classList.add('visible');
+}
+
+function revealBreakdown() {
+  const container = document.getElementById('breakdown-items');
+  container.innerHTML = currentResults.map(c => {
+    const pass = c.pts === 1;
+    const cls = c.isRedFlag && !pass ? 'check-item redflag-fail' : pass ? 'check-item pass' : 'check-item fail';
+    const icon = pass ? '✓' : '✗';
+    return `
+      <div class="${cls}">
+        <div class="check-icon" style="color:${pass ? 'var(--green)' : c.isRedFlag ? 'var(--red)' : '#5a3030'}">${icon}</div>
+        <div class="check-body">
+          <div class="check-label">${c.label}</div>
+          <div class="check-why">${c.why}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('breakdown').classList.add('visible');
+}
+
+// win rate conditional field
+document.querySelectorAll('input[name="winrate"]').forEach(el => {
+  el.addEventListener('change', function() {
+    const cond = document.getElementById('wr-context-field');
+    if (this.value === 'yes') {
+      cond.classList.add('visible');
+      cond.style.display = 'flex';
+    } else {
+      cond.classList.remove('visible');
+      cond.style.display = 'none';
+      // clear the conditional field
+      document.querySelectorAll('input[name="winrate_context"]').forEach(r => r.checked = false);
+    }
+  });
+});
+
+function resetChecker() {
+  document.getElementById('checker-form').reset();
+  document.getElementById('checker-form').style.display = 'flex';
+  document.getElementById('results').classList.remove('visible');
+  document.getElementById('breakdown').classList.remove('visible');
+  document.getElementById('gate-confirm').classList.remove('visible');
+  document.getElementById('gate-form-wrap').style.display = 'block';
+  document.getElementById('gate-email').value = '';
+  document.getElementById('wr-context-field').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
