@@ -1,26 +1,49 @@
 # Dev Brief: Waitlist API Integration — Signal Quality Checker
 
-**From:** Marketing / Product  
-**To:** Dev Team  
-**Priority:** Medium — current fallback works, this upgrades the integration  
+**From:** Marketing / Product
+**To:** Dev Team
+**Priority:** Medium — current fallback works and is honest about its limits, this upgrades it to real verification
 
 ---
 
 ## Context
 
-The buffer site at **billionsignal.com** hosts a Signal Quality Checker tool. Users fill in a 13-question form, get an instant structural quality score, then enter their email to unlock the full itemised breakdown.
+The buffer site at **billionsignal.com** hosts a Signal Quality Checker tool (`checker.html`). Users answer 13 questions, get an instant structural quality score, then have to be on the Billionaire Signal waitlist to see the full itemised breakdown.
 
-That email entry = joining the Billionaire Signal waitlist on **billionairesignal.com**.
+Since the buffer site is a static page with no backend, and the waitlist lives on **billionairesignal.com** (a different domain), we currently **cannot verify** whether an email is actually on the waitlist. The UI is honest about this: it offers two paths, and neither claims a fake confirmation.
 
-Right now (before this API exists), the checker client-side reveals the breakdown immediately and opens `https://billionairesignal.com/waitlist?email={email}` in a new tab as a fallback. It works, but the email isn't reliably captured in our system without the user completing the waitlist form themselves.
+- **"I'm already on the waitlist"** → user types their email → results unlock immediately, labelled clearly as unverified/self-reported ("this unlocks your results on trust")
+- **"I'm new here"** → opens `billionairesignal.com/waitlist` in a new tab (no email asked yet) → user joins there → comes back → types the email they signed up with → we *attempt* a real check (see endpoint below) → if that fails (because the endpoint doesn't exist yet), it falls back to the same honest self-reported unlock
 
-**What we need:** A proper API endpoint so the email is captured automatically, silently, when the user clicks "Unlock Free →" on the checker — without them needing to do anything on the main site.
+**What we need:** the two endpoints below so both paths become real verification instead of self-report.
 
 ---
 
-## What to Build
+## Endpoint 1 — Check waitlist membership (used on "I'm new here" return step)
 
-### Endpoint
+```
+GET https://billionairesignal.com/api/waitlist-check?email={email}
+```
+
+### Response
+
+```json
+// 200 OK
+{ "subscribed": true }
+// or
+{ "subscribed": false }
+```
+
+This is already wired into `checker.html` (`unlockAfterJoin()`). Today the fetch fails (endpoint doesn't exist / CORS-blocked) and the code catches that and falls back to an honest "we can't auto-verify yet" message. The moment this endpoint is live with correct CORS, the checker automatically starts giving real confirmations — no further changes needed on our side.
+
+**Response behavior expected by the checker:**
+- `subscribed: true` → shows "You're confirmed on the waitlist" and unlocks
+- `subscribed: false` → shows "we couldn't find that email yet" with a retry + join link, does **not** unlock
+- Any network/CORS/timeout failure → falls back to self-reported unlock (current safe default)
+
+---
+
+## Endpoint 2 — Subscribe directly (optional, nice-to-have)
 
 ```
 POST https://billionairesignal.com/api/waitlist-subscribe
@@ -49,35 +72,28 @@ POST https://billionairesignal.com/api/waitlist-subscribe
 ### Response
 
 ```json
-// 200 OK — subscribed or already on list
 { "success": true }
-
-// 400 Bad Request — invalid email
-{ "success": false, "reason": "invalid_email" }
-
-// 409 Conflict — optional, if you want to distinguish new vs existing
-{ "success": false, "reason": "already_subscribed" }
 ```
 
-The checker ignores non-200 responses gracefully — it always reveals the breakdown to the user regardless of API outcome. So a 500 or timeout won't break UX, it'll just silently fall back to the waitlist page redirect.
+This isn't wired into the checker's JS yet, since the current flow deliberately sends new users to the *real* waitlist page on billionairesignal.com to sign up themselves (so signup always goes through your actual form/validation/consent flow, not a shadow copy of it). This endpoint would let us skip that redirect entirely and subscribe someone directly from the buffer site — worth doing eventually, but Endpoint 1 (verification) is the priority since it's what makes the current UI honest end-to-end.
 
 ---
 
-## CORS Headers Required
+## CORS Headers Required (both endpoints)
 
-The request comes from `https://billionsignal.com` (a different domain), so the endpoint **must** include these CORS headers on every response including preflight OPTIONS:
+The requests come from `https://billionsignal.com` (a different domain), so both endpoints **must** include these CORS headers on every response including preflight OPTIONS:
 
 ```
 Access-Control-Allow-Origin: https://billionsignal.com
-Access-Control-Allow-Methods: POST, OPTIONS
+Access-Control-Allow-Methods: GET, POST, OPTIONS
 Access-Control-Allow-Headers: Content-Type
 ```
 
-If you're on Cloudflare (which you are), this can be set as a Transform Rule or via a Worker — no code change needed on the main site.
+If you're on Cloudflare (which you are), this can be set as a Transform Rule or via a Worker — no code change needed on the main site's existing pages.
 
 ---
 
-## Email Platform Tagging
+## Email Platform Tagging (applies to Endpoint 2 if/when built)
 
 When adding to the waitlist, tag/segment the subscriber with:
 
@@ -95,11 +111,11 @@ This enables targeted follow-up sequences, e.g.:
 
 ## Alternative: Use Email Platform API Directly
 
-If the waitlist runs on **Beehiiv, ConvertKit, Mailchimp, or similar**, we can call their subscriber API directly from the buffer site's client-side JS — skipping the need to build a custom endpoint entirely.
+If the waitlist runs on **Beehiiv, ConvertKit, Mailchimp, or similar**, these platforms typically have a "check subscriber status" lookup endpoint already — we may be able to call that directly instead of building Endpoint 1 from scratch.
 
 Provide us with:
 - The platform name
-- A **public-only** API key scoped to subscriber creation only (no read, no delete)
+- A **public-only** API key scoped to read-only subscriber lookup (no write/delete)
 - The list/publication ID
 
 We'll wire it in on our end. This is the fastest path if you're already on one of these platforms.
@@ -108,28 +124,13 @@ We'll wire it in on our end. This is the fastest path if you're already on one o
 
 ## Where to Make the Code Change (Buffer Site)
 
-Once the API is live, find this comment in `checker.html`:
+Once Endpoint 1 is live, no change is needed on our side — find this in `checker.html`'s `unlockAfterJoin()` function:
 
 ```javascript
-// API_ENDPOINT: replace with live endpoint when devs ship it
-fetch('https://billionairesignal.com/api/waitlist-subscribe', { ... })
+fetch(`https://billionairesignal.com/api/waitlist-check?email=${encodeURIComponent(email)}`, ...)
 ```
 
-This is already the correct endpoint URL — no change needed on our side once you've built it. Just ship the endpoint and it starts working automatically.
-
----
-
-## Pre-fill Fallback (Currently Active)
-
-Until the API is live, the checker opens this URL in a new tab after email entry:
-
-```
-https://billionairesignal.com/waitlist?email={encoded_email}
-```
-
-**Request:** Make the waitlist page on billionairesignal.com read the `?email=` query parameter and pre-fill the email input. This makes the fallback seamless — the user lands on the waitlist page with their email already filled in, they just hit Submit.
-
-This is a small frontend change (one line of JS on the waitlist page) and is independent of the API work.
+It's already pointed at the correct URL and already handles both the success and failure response shapes described above. Ship the endpoint with correct CORS and it starts working immediately.
 
 ---
 
@@ -137,11 +138,11 @@ This is a small frontend change (one line of JS on the waitlist page) and is ind
 
 | # | Task | Effort | Impact |
 |---|------|--------|--------|
-| 1 | Pre-fill waitlist form from `?email=` query param | XS — 1 line JS | Fixes fallback UX immediately |
-| 2 | `POST /api/waitlist-subscribe` endpoint with CORS | S–M | Proper cross-site capture |
-| 3 | Tag subscribers by `source` + `score_band` | S | Enables segmented sequences |
-| 4 | Trigger PDF delivery email on subscribe | M | Completes the promised UX |
+| 1 | `GET /api/waitlist-check?email=` with CORS | S | Turns the "I'm new here" return step into real verification instead of self-report |
+| 2 | `POST /api/waitlist-subscribe` with CORS (optional) | S–M | Lets us skip the redirect to billionairesignal.com entirely, if desired later |
+| 3 | Tag subscribers by `source` + `score_band` | S | Enables segmented follow-up sequences |
+| 4 | Trigger PDF delivery email on subscribe | M | Completes the promised "Signal Quality Checklist PDF" UX |
 
 ---
 
-*Questions: ping the marketing team. The checker tool is live at billionsignal.com/checker.html — test it yourself to understand the UX flow.*
+*Questions: ping the marketing team. The checker tool is live at billionsignal.com/checker — test it yourself to understand the UX flow, including both the "already a member" and "new here" paths.*
